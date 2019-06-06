@@ -9,9 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MongoSaver {
     private static final Logger logger = LoggerFactory.getLogger(MongoSaver.class);
@@ -45,11 +43,11 @@ public class MongoSaver {
 
     }
 
-    public static List<Map<String, String>> getAllEmails() {
+    public static List<EmailDTO> getAllEmails() {
         String database = Config.getProp("mongo.database");
         MongoConnection mongoConnection = new MongoConnection();
 
-        ArrayList<Map<String, String>> result = new ArrayList<>();
+        ArrayList<EmailDTO> result = new ArrayList<>();
 
         try (MongoClient mongoClient = mongoConnection.getClient()) {
 
@@ -59,15 +57,13 @@ public class MongoSaver {
 
 
             for (Document email : c.find()) {
-                HashMap<String, String> item = new HashMap<>();
-
-                item.put("to", email.get("to").toString());
-                item.put("from", email.get("from").toString());
-                item.put("subject", email.get("subject").toString());
-                item.put("text", email.get("text").toString());
-                item.put("asHtml", email.get("asHtml").toString());
-
-                result.add(item);
+                result.add(new EmailDTO(
+                        email.get("to").toString(),
+                        email.get("from").toString(),
+                        email.get("subject").toString(),
+                        email.get("text").toString(),
+                        Boolean.parseBoolean(email.get("asHtml").toString())
+                ));
             }
 
         } catch (MongoException mongoException) {

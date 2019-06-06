@@ -1,8 +1,7 @@
-<%@page import="nl.hu.bep.friendspammer.MongoSaver"%>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="java.util.Map" %>
+<%@page import="nl.hu.bep.friendspammer.EmailDTO" %>
+<%@ page import="nl.hu.bep.friendspammer.MongoSaver" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+		 pageEncoding="ISO-8859-1" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -22,16 +21,21 @@
 	</tr>
 </thead>
 <tbody>
-<% 
+<%
 
-	for (Map<String, String> email : MongoSaver.getAllEmails()) {
+	for (EmailDTO email : MongoSaver.getAllEmails()) {
 		%>
 			<tr>
-				<td><%=email.get("to") %></td>
-				<td><%=email.get("from") %></td>
-				<td><%=email.get("subject") %></td>
-				<td><%=email.get("text") %></td>
-				<td><%=email.get("asHtml") %></td>
+				<td><%=email.getTo() %>
+				</td>
+				<td><%=email.getFrom() %>
+				</td>
+				<td><%=email.getSubject() %>
+				</td>
+				<td><%=email.getText() %>
+				</td>
+				<td><%=email.isAsHtml() ? "enabled" : "disabled" %>
+				</td>
 				
 			</tr>
 		
