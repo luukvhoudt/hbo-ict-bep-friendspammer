@@ -1,6 +1,7 @@
 package nl.hu.bep.friendspammer;
 
-import com.mongodb.*;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
@@ -13,15 +14,11 @@ class MongoSaver {
     private MongoSaver() {}
 
     static boolean saveEmail(String to, String from, String subject, String text, Boolean html) {
-        String userName = Config.getProp("mongo.username");
-        String password = Config.getProp("mongo.password");
         String database = Config.getProp("mongo.database");
-
-        MongoCredential credential = MongoCredential.createCredential(userName, database, password.toCharArray());
+        MongoConnection mongoConnection = new MongoConnection();
 
         boolean success = true;
-
-        try (MongoClient mongoClient = new MongoClient(new ServerAddress("ds227939.mlab.com", 27939), credential, MongoClientOptions.builder().build())) {
+        try (MongoClient mongoClient = mongoConnection.getClient()) {
 
             MongoDatabase db = mongoClient.getDatabase(database);
 

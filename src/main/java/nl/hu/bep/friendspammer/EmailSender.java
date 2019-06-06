@@ -14,22 +14,7 @@ public class EmailSender {
     private EmailSender() {}
 
     public static void sendEmail(String subject, String to, String messageBody, boolean asHtml) {
-
-        Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.mailtrap.io");
-        props.put("mail.smtp.port", "2525");
-        props.put("mail.smtp.auth", "true");
-
-        String username = Config.getProp("mailtrap.username");
-        String password = Config.getProp("mailtrap.password");
-
-        Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
+        Session session = getSession();
         try {
 
             Message message = new MimeMessage(session);
@@ -53,22 +38,7 @@ public class EmailSender {
     }
 
     public static void sendEmail(String subject, String[] toList, String messageBody, boolean asHtml) {
-
-        Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.mailtrap.io");
-        props.put("mail.smtp.port", "2525");
-        props.put("mail.smtp.auth", "true");
-
-        String username = Config.getProp("mailtrap.username");
-        String password = Config.getProp("mailtrap.password");
-
-        Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
+        Session session = getSession();
         try {
 
             for (int index = 0; index < toList.length; index++) {
@@ -92,6 +62,24 @@ public class EmailSender {
         } catch (MessagingException e) {
             throw new EmailSenderRuntimeException();
         }
+    }
+
+    private static Session getSession() {
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.mailtrap.io");
+        props.put("mail.smtp.port", "2525");
+        props.put("mail.smtp.auth", "true");
+
+        String username = Config.getProp("mailtrap.username");
+        String password = Config.getProp("mailtrap.password");
+
+        return Session.getInstance(props,
+                new javax.mail.Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
     }
 
 }
