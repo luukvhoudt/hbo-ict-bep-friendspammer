@@ -1,12 +1,6 @@
-<%@page import="java.util.Iterator"%>
-<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
-<%@page import="com.mongodb.MongoClientOptions"%>
-<%@page import="com.mongodb.ServerAddress"%>
-<%@page import="org.bson.Document"%>
-<%@page import="com.mongodb.client.MongoCollection"%>
-<%@page import="com.mongodb.client.MongoDatabase"%>
-<%@page import="com.mongodb.MongoClient"%>
-<%@page import="com.mongodb.MongoCredential"%>
+<%@page import="nl.hu.bep.friendspammer.MongoSaver"%>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Map" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -30,24 +24,7 @@
 <tbody>
 <% 
 
-String userName = "spammer";
-String password = "hamspam";
-String database = "friendspammer";
-
-MongoCredential credential = MongoCredential.createCredential(userName, database, password.toCharArray());
-
-MongoClient mongoClient = new MongoClient(new ServerAddress("ds227939.mlab.com", 27939), credential, MongoClientOptions.builder().build());
-	
-	MongoDatabase db = mongoClient.getDatabase( database );
-	
-	MongoCollection<Document> c = db.getCollection("email");
-	
-	Iterator<Document> it = c.find().iterator();
-	
-	while(it.hasNext())
-	{
-		Document email = it.next();
-		
+	for (Map<String, String> email : MongoSaver.getAllEmails()) {
 		%>
 			<tr>
 				<td><%=email.get("to") %></td>
@@ -58,19 +35,9 @@ MongoClient mongoClient = new MongoClient(new ServerAddress("ds227939.mlab.com",
 				
 			</tr>
 		
-		
-		
-		
 		<%
-		
-		
+
 	}
-
-
-	mongoClient.close();
-
-
-
 
 %>
 
